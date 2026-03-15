@@ -1,15 +1,43 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import Exceptions.CommandException;
+import ProgramInterface.UserInterface;
+import Services.UserServices;
+import Users.User;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        UserServices userServices = new UserServices();
+        UserInterface userInterface = new UserInterface(userServices);
+        userServices.LoadUsers();
+        Scanner sc = new Scanner(System.in);
+        User user = null;
+
+        while (true) {
+            try{
+                System.out.println("Welcome please select login or register(l/r)");
+                String commend = sc.nextLine();
+
+                if(commend.equals("l")){
+                    user = userInterface.Login();
+                }else if(commend.equals("r")){
+                    user = userInterface.Register();
+                }else{
+                    throw new CommandException("Invalid command");
+                }
+                break;
+            }catch (CommandException e){
+                System.out.println(e.getMessage());
+            }
         }
+        System.out.println("welcome" + " " + user.getUsername());
+
+
+    }
+
+    public static boolean isInitialLoad(UserServices userServices){
+        userServices.LoadUsers();
+        return true;
     }
 }
