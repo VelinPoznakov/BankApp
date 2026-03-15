@@ -8,6 +8,12 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
+        /*
+        * loans logic, loans in user, cards, payments, bank functionality, admin user functionality,
+        * seeder, action records,
+        * later add the loans to be approved from worker
+        */
+
         UserServices userServices = new UserServices();
         UserInterface userInterface = new UserInterface(userServices);
         userServices.LoadUsers();
@@ -37,6 +43,7 @@ public class Main {
     }
 
     public static boolean isInitialLoad(UserServices userServices){
+        // make on first run to seed admin user
         userServices.LoadUsers();
         return true;
     }
