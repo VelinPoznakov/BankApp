@@ -5,6 +5,8 @@ import Exceptions.LoginException;
 import Exceptions.UsernameException;
 import ProgramInterface.Interfaces.IUserInterface;
 import Services.IBANService;
+import Services.Interfaces.IIBANService;
+import Services.Interfaces.IUserService;
 import Services.UserServices;
 import Entities.Users.Customer;
 import Entities.Users.User;
@@ -15,10 +17,10 @@ import java.util.Scanner;
 
 public class UserInterface implements IUserInterface {
 
-    private final UserServices userServices;
-    private final IBANService ibanService;
+    private final IUserService userServices;
+    private final IIBANService ibanService;
 
-    public UserInterface(UserServices userServices,  IBANService IBANService) {
+    public UserInterface(IUserService userServices,  IIBANService IBANService) {
 
         this.userServices = userServices;
         this.ibanService = IBANService;
@@ -65,7 +67,7 @@ public class UserInterface implements IUserInterface {
                     throw new InvalidTypeException("Invalid type");
                 }
 
-                int id = userServices.GetUsersCount() + 1;
+                int id = UserServices.users.size() + 1;
                 int customerId = userServices.GetCustomerOnly().size() + 1;
                 password = MaskPassword(password);
                 String balanceId = "BG" + IBANService.ibans.size() + 1;

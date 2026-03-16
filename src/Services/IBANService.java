@@ -1,7 +1,7 @@
 package Services;
 
 import Entities.IBAN;
-import Entities.Users.User;
+import Services.Interfaces.IIBANService;
 import Validations.Validations;
 
 import java.io.*;
@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IBANService {
+public class IBANService implements IIBANService {
 
     public static String FILENAME = "IBANs.bin";
     public static Path file = Path.of("files", FILENAME);

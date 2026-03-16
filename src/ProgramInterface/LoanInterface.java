@@ -7,6 +7,8 @@ import Entities.Loans.Loan;
 import Entities.Loans.StudentLoan;
 import ProgramInterface.Interfaces.ILoanInterface;
 import Services.IBANService;
+import Services.Interfaces.IIBANService;
+import Services.Interfaces.ILoanService;
 import Services.LoanService;
 import Entities.Users.Customer;
 import Entities.Users.Enums.CustomerType;
@@ -18,10 +20,10 @@ import java.util.Scanner;
 
 public class LoanInterface implements ILoanInterface {
 
-    private final LoanService loanService;
-    private final IBANService ibanService;
+    private final ILoanService loanService;
+    private final IIBANService ibanService;
 
-    public LoanInterface(LoanService loanService, IBANService ibanService)
+    public LoanInterface(ILoanService loanService, IIBANService ibanService)
     {
         this.loanService = loanService;
         this.ibanService = ibanService;

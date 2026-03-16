@@ -7,9 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import ProgramInterface.Interfaces.IUserInterface;
+import Services.Interfaces.IUserService;
 import Validations.Validations;
 
-public class UserServices {
+public class UserServices implements IUserService {
 
     public static String FILENAME = "users.bin";
     public static Path file = Path.of("files", FILENAME);
@@ -72,9 +75,5 @@ public class UserServices {
             }
         }
         throw new UserNotFoundException("User not found");
-    }
-
-    public int GetUsersCount(){
-        return users.size();
     }
 }

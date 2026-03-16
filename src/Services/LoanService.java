@@ -2,6 +2,7 @@ package Services;
 
 import Entities.Loans.Enums.LoanType;
 import Entities.Loans.Loan;
+import Services.Interfaces.ILoanService;
 import Validations.Validations;
 
 import java.io.*;
@@ -10,7 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoanService {
+public class LoanService implements ILoanService {
 
     public static final String FILENAME = "loans.bin";
     public static Path file = Path.of("files", FILENAME);
