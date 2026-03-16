@@ -1,19 +1,15 @@
-package Users;
+package Entities.Users;
 
+import Entities.IBAN;
 import Exceptions.CustomerTypeException;
 import Exceptions.InvalidMoneyNumber;
-import Users.Enums.CustomerType;
+import Entities.Users.Enums.CustomerType;
 
 public class Customer extends User {
 
     private int customerId;
-
-    // loans set
-//    private Set<Loan> Loans = new HashSet<Loan>();
     private double monthlyIncome;
-    private double money;
-//    private List<Cards> Cards = new ArrayList<Cards>();
-
+//    private IBAN iban;
     private CustomerType customerType;
 
 
@@ -22,20 +18,18 @@ public class Customer extends User {
                     String password,
                     String birthDate,
                     int customerId,
-                    double money,
                     double monthlyIncome,
                     String customerType) {
         super(id, username, password, birthDate);
         setCustomerId(customerId);
-        setMoney(money);
         setMonthlyIncome(monthlyIncome);
         setCustomerType(customerType);
     }
 
-    @Override
-    public String getUserDetails() {
-        return customerType.toString() + " " + username + " " + getMoney();
-    }
+//    @Override
+//    public String getUserDetails() {
+//        return customerType.toString() + " " + username + " " + iban.getBalance();
+//    }
 
     public double getMonthlyIncome() {
         return monthlyIncome;
@@ -54,17 +48,6 @@ public class Customer extends User {
 
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
-    }
-
-    public double getMoney() {
-        return money;
-    }
-
-    public void setMoney(double money) {
-        if(money < 0){
-            throw new InvalidMoneyNumber("Money cannot be lower than 0");
-        }
-        this.money = money;
     }
 
     public CustomerType getCustomerType() {

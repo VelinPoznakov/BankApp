@@ -1,7 +1,12 @@
 import Exceptions.CommandException;
+import ProgramInterface.Interfaces.ILoanInterface;
+import ProgramInterface.Interfaces.IUserInterface;
+import ProgramInterface.LoanInterface;
 import ProgramInterface.UserInterface;
+import Services.IBANService;
+import Services.LoanService;
 import Services.UserServices;
-import Users.User;
+import Entities.Users.User;
 
 import java.util.Scanner;
 
@@ -14,11 +19,21 @@ public class Main {
         * later add the loans to be approved from worker
         */
 
+        // Services
         UserServices userServices = new UserServices();
-        UserInterface userInterface = new UserInterface(userServices);
-        userServices.LoadUsers();
+        IBANService ibanService = new IBANService();
+        LoanService loanService = new LoanService();
+
+        // Program Interfaces
+        UserInterface userInterface = new UserInterface(userServices, ibanService);
+        ILoanInterface loanInterface = new LoanInterface(loanService, ibanService);
+
+        // Config
+        Configuration config = new Configuration(userServices, ibanService, loanService);
+        config.Loader();
+
         Scanner sc = new Scanner(System.in);
-        User user = null;
+        User user;
 
         while (true) {
             try{
@@ -39,12 +54,5 @@ public class Main {
         }
         System.out.println("welcome" + " " + user.getUsername());
 
-
-    }
-
-    public static boolean isInitialLoad(UserServices userServices){
-        // make on first run to seed admin user
-        userServices.LoadUsers();
-        return true;
     }
 }

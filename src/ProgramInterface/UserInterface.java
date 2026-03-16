@@ -1,26 +1,34 @@
 package ProgramInterface;
 
+import Entities.IBAN;
 import Exceptions.LoginException;
 import Exceptions.UsernameException;
+import ProgramInterface.Interfaces.IUserInterface;
+import Services.IBANService;
 import Services.UserServices;
-import Users.Customer;
-import Users.User;
+import Entities.Users.Customer;
+import Entities.Users.User;
 import com.sun.jdi.InvalidTypeException;
+
 import java.util.Scanner;
 
 
-public class UserInterface {
+public class UserInterface implements IUserInterface {
 
     private final UserServices userServices;
+    private final IBANService ibanService;
 
-    public UserInterface(UserServices userServices) {
+    public UserInterface(UserServices userServices,  IBANService IBANService) {
+
         this.userServices = userServices;
+        this.ibanService = IBANService;
     }
 
     public User Register(){
 
         Scanner sc = new Scanner(System.in);
         User customer;
+        IBAN iban;
 
         while(true){
 
@@ -28,7 +36,7 @@ public class UserInterface {
                 System.out.println("Enter username: ");
                 String username = sc.nextLine();
 
-                for(User user: userServices.users){
+                for(User user: UserServices.users){
                     if(user.getUsername().equals(username)){
                         throw new UsernameException("Username already exist");
                     }
@@ -46,6 +54,7 @@ public class UserInterface {
 
                 System.out.println("What type of customer are you student/adult (s/a)");
                 String type = sc.next();
+                sc.nextLine();
 
                 if(type.equals("s")){
                     type = "student";
@@ -56,9 +65,10 @@ public class UserInterface {
                     throw new InvalidTypeException("Invalid type");
                 }
 
-                int id = userServices.getUsersCount() + 1;
+                int id = userServices.GetUsersCount() + 1;
                 int customerId = userServices.GetCustomerOnly().size() + 1;
                 password = MaskPassword(password);
+                String balanceId = "BG" + IBANService.ibans.size() + 1;
 
                 customer = new Customer(
                         id,
@@ -66,9 +76,14 @@ public class UserInterface {
                         password,
                         birthDate,
                         customerId,
-                        0,
                         monthlyIncome,
                         type);
+
+                iban = new IBAN(
+                     balanceId,
+                     0,
+                     id
+                );
 
                 break;
             }catch (Exception e){
@@ -76,8 +91,11 @@ public class UserInterface {
             }
         }
 
-        userServices.users.add(customer);
+        UserServices.users.add(customer);
+        IBANService.ibans.add(iban);
+
         userServices.CreateUserInFile();
+        ibanService.CreateIBANsInFile();
 
         return customer;
     }
@@ -95,7 +113,7 @@ public class UserInterface {
                 System.out.println("Enter password: ");
                 String password = sc.nextLine();
 
-                for (User user: userServices.users){
+                for (User user: UserServices.users){
                     if(user.getUsername().equals(username)){
 
                         if(MaskPassword(user.getPassword()).equals(password)){

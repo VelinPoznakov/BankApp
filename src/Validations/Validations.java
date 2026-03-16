@@ -7,9 +7,11 @@ public class Validations {
 
     public static boolean validateFile(String fileName){
         Path folder = Path.of("files", fileName);
-        
-
 
         return Files.exists(folder);
+    }
+
+    public static boolean ValidatePayment(double anualPayment, double accountBalance){
+        return accountBalance >= anualPayment;
     }
 }

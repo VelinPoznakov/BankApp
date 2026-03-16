@@ -1,7 +1,7 @@
 package Services;
 import Exceptions.UserNotFoundException;
-import Users.Customer;
-import Users.User;
+import Entities.Users.Customer;
+import Entities.Users.User;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,7 +13,7 @@ public class UserServices {
 
     public static String FILENAME = "users.bin";
     public static Path file = Path.of("files", FILENAME);
-    public List<User> users;
+    public static List<User> users;
 
     public List<User> LoadUsers(){
 
@@ -27,8 +27,7 @@ public class UserServices {
 
         try {
             if (Files.size(file) == 0) {
-                users = new ArrayList<>();
-                return new ArrayList<>();
+                return users =  new ArrayList<>();
             }
 
             ObjectInputStream in =
@@ -46,8 +45,8 @@ public class UserServices {
 
     public void CreateUserInFile(){
 
-        try(ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(file.toFile()))){
-            o.writeObject(users);
+        try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file.toFile()))){
+            out.writeObject(users);
         }catch (IOException e){
             throw new RuntimeException(e);
         }
@@ -75,7 +74,7 @@ public class UserServices {
         throw new UserNotFoundException("User not found");
     }
 
-    public int getUsersCount(){
+    public int GetUsersCount(){
         return users.size();
     }
 }

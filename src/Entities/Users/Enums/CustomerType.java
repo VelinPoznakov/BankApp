@@ -1,4 +1,4 @@
-package Users.Enums;
+package Entities.Users.Enums;
 
 public enum CustomerType {
     STUDENT,
