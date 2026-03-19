@@ -1,7 +1,7 @@
 package Entities.Users;
 
-import Entities.Users.Enums.CustomerType;
-import Entities.Users.Enums.UserRoles;
+import Entities.Enums.CustomerType;
+import Entities.Enums.UserRoles;
 import Exceptions.CustomerTypeException;
 import Exceptions.InvalidMoneyNumber;
 import Exceptions.InvalidPasswordException;

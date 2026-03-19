@@ -1,4 +1,4 @@
-package Entities.Users.Enums;
+package Entities.Enums;
 
 public enum UserRoles {
 

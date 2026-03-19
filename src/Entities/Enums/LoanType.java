@@ -1,4 +1,4 @@
-package Entities.Loans.Enums;
+package Entities.Enums;
 
 public enum LoanType {
     STUDENT,

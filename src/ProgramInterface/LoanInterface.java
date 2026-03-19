@@ -11,7 +11,7 @@ import ProgramInterface.Interfaces.ILoanInterface;
 import Services.Interfaces.IIBANService;
 import Services.Interfaces.ILoanService;
 import Services.LoanService;
-import Entities.Users.Enums.CustomerType;
+import Entities.Enums.CustomerType;
 import Validations.Validations;
 
 import java.time.LocalDate;
@@ -253,8 +253,8 @@ public class LoanInterface implements ILoanInterface {
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }
-
         }
-
     }
+
+
 }

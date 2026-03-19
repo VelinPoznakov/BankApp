@@ -1,6 +1,6 @@
 package Services;
 
-import Entities.Loans.Enums.LoanType;
+import Entities.Enums.LoanType;
 import Entities.Loans.Loan;
 import Services.Interfaces.ILoanService;
 import Validations.Validations;

@@ -1,6 +1,6 @@
 package Entities.Loans;
 
-import Entities.Loans.Enums.LoanType;
+import Entities.Enums.LoanType;
 
 public class AdultLoan extends Loan {
 

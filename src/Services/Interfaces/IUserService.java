@@ -9,4 +9,5 @@ public interface IUserService {
     void CreateUserInFile();
     List<User> GetCustomerOnly();
     User GetUser(int userId);
+    void CreateAdminUserInFile();
 }

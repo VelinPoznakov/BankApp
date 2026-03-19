@@ -1,7 +1,9 @@
+import Entities.IBAN;
 import Services.Interfaces.ICardService;
 import Services.Interfaces.IIBANService;
 import Services.Interfaces.ILoanService;
 import Services.Interfaces.IUserService;
+import Services.UserServices;
 
 public class DataLoader {
 
@@ -22,12 +24,16 @@ public class DataLoader {
     }
 
     public void Loader(){
-//        isInitialLoad();
-        // try catch for loading problem
         userServices.LoadUsers();
         ibanService.LoadIBANs();
         loanService.LoadLoans();
         cardService.LoadCards();
+
+        if(UserServices.users.isEmpty()){
+            userServices.CreateAdminUserInFile();
+            ibanService.CreateAdminIBAN();
+            cardService.CreateAdminCard();
+        }
 
         System.out.println("Data load successfully!");
     }

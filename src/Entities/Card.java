@@ -1,5 +1,7 @@
 package Entities;
 
+import Entities.Enums.CardProvider;
+
 import java.io.Serializable;
 
 public class Card implements Serializable {
@@ -32,7 +34,7 @@ public class Card implements Serializable {
     }
 
     public String CardDetails(){
-        return "Card Number " + getCardNumber() + "\n"
+        return "Card Number " + getMaskedCardNumber() + "\n"
                 + "CVV Code " + getCvvCode() + "\n"
                 + "Expiration Date " + getExpirationDate() + "\n"
                 + "Card Provider " + cardProvider.toString() + "\n";
@@ -84,5 +86,27 @@ public class Card implements Serializable {
 
     public void setIBANName(String IBANName) {
         this.IBANName = IBANName;
+    }
+
+    public String getMaskedCardNumber() {
+        String number = String.valueOf(getCardNumber());
+
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < number.length(); i++) {
+
+            if (i < 4) {
+                result.append(number.charAt(i));
+            } else {
+                result.append("*");
+            }
+
+            // add space every 4 chars
+            if ((i + 1) % 4 == 0 && i != number.length() - 1) {
+                result.append(" ");
+            }
+        }
+
+        return result.toString();
     }
 }

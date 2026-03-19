@@ -12,4 +12,5 @@ public interface ICardService {
     Card GetUserCardByCvvCode(int userId, int cvv);
     long GenerateCardNumber();
     int GenerateCvvCode();
+    void CreateAdminCard();
 }

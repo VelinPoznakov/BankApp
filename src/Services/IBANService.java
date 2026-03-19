@@ -1,6 +1,7 @@
 package Services;
 
 import Entities.IBAN;
+import Entities.Users.User;
 import Services.Interfaces.IIBANService;
 import Validations.Validations;
 
@@ -68,5 +69,17 @@ public class IBANService implements IIBANService {
         }
 
         return userIban;
+    }
+
+    @Override
+    public void CreateAdminIBAN() {
+        IBAN iban = new IBAN(
+                "BG01",
+                1000,
+                1
+        );
+
+        ibans.add(iban);
+        CreateIBANsInFile();
     }
 }

@@ -1,7 +1,7 @@
 package Entities.Loans;
 
 import Exceptions.InvalidMoneyNumber;
-import Entities.Loans.Enums.LoanType;
+import Entities.Enums.LoanType;
 
 import java.io.Serializable;
 import java.time.LocalDate;

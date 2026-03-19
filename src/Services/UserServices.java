@@ -80,4 +80,19 @@ public class UserServices implements IUserService {
         }
         throw new UserNotFoundException("User not found");
     }
+
+    @Override
+    public void CreateAdminUserInFile() {
+        User admin = new Admin(
+                1,
+                "Admin",
+                "Admin-123!",
+                "25.05.2000",
+                1000
+        );
+        users.add(admin);
+        CreateUserInFile();
+
+        System.out.println("Admin user created");
+    }
 }

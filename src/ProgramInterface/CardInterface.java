@@ -1,7 +1,7 @@
 package ProgramInterface;
 
 import Entities.Card;
-import Entities.CardProvider;
+import Entities.Enums.CardProvider;
 import Entities.IBAN;
 import Entities.Users.User;
 import Exceptions.CommandException;
@@ -118,7 +118,6 @@ public class CardInterface implements ICardInterface {
         while (true){
             try{
                 System.out.println("Select section: Card Details(cd), Create New Card(cnc), Deactivate Card(dc), Online Payment(op)");
-                System.out.println("If you want to exit type 'e'");
 
                 int cvvCode;
                 Card card;

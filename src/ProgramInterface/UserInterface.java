@@ -1,7 +1,7 @@
 package ProgramInterface;
 
 import Entities.Card;
-import Entities.CardProvider;
+import Entities.Enums.CardProvider;
 import Entities.IBAN;
 import Exceptions.CommandException;
 import Exceptions.LoginException;
@@ -85,7 +85,7 @@ public class UserInterface implements IUserInterface {
                 if(type.equals("s")){
                     type = "student";
                 } else if (type.equals("a")) {
-                    type = "adults";
+                    type = "adult";
                 }
                 else{
                     throw new InvalidTypeException("Invalid type");
@@ -107,7 +107,7 @@ public class UserInterface implements IUserInterface {
 
                 int id = UserServices.users.size() + 1;
                 password = MaskPassword(password);
-                String balanceId = "BG" + IBANService.ibans.size() + 1;
+                String IBANName = "BG" + IBANService.ibans.size() + 1;
                 int cardId = CardService.cards.size() + 1;
                 long cardNumber = cardService.GenerateCardNumber();
                 int cvvCode = cardService.GenerateCvvCode();
@@ -122,7 +122,7 @@ public class UserInterface implements IUserInterface {
                         type);
 
                 iban = new IBAN(
-                     balanceId,
+                     IBANName,
                      0,
                      id
                 );
@@ -134,7 +134,7 @@ public class UserInterface implements IUserInterface {
                         expirationDate,
                         cardProvider,
                         id,
-                        balanceId
+                        IBANName
                 );
 
                 System.out.println("Your card cvv code is " + cvvCode);

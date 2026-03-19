@@ -1,6 +1,6 @@
 package Entities.Users;
 
-import Entities.Users.Enums.UserRoles;
+import Entities.Enums.UserRoles;
 
 public class Admin extends User {
 

@@ -1,12 +1,14 @@
 package Services;
 
 import Entities.Card;
+import Entities.Enums.CardProvider;
 import Services.Interfaces.ICardService;
 import Validations.Validations;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -97,6 +99,24 @@ public class CardService implements ICardService {
         Random random = new Random();
 
         return random.nextInt(100, 1000);
+    }
+
+    @Override
+    public void CreateAdminCard() {
+        Card card = new Card(
+                1,
+                GenerateCardNumber(),
+                GenerateCvvCode(),
+                LocalDate.now().plusYears(5).toString(),
+                CardProvider.MASTERCARD,
+                1,
+                "BG01"
+        );
+
+        System.out.println(card.CardDetails());
+
+        cards.add(card);
+        CreateCardsInFile();
     }
 
 
