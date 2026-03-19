@@ -1,14 +1,15 @@
 public class Main {
 
     public static void main(String[] args) {
-        /*
-        * loans logic, loans in user, cards, payments, bank functionality, admin user functionality,
-        * seeder, action records,
-        * later add the loans to be approved from worker
-        */
 
         Application app = new Application();
         app.Start();
 
+        /*
+        start
+        increment line 1 with +1
+        if action with db insert text
+        print all from line 2 to end
+         */
     }
 }

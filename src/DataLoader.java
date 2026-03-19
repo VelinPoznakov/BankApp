@@ -1,31 +1,34 @@
-import Services.IBANService;
+import Services.Interfaces.ICardService;
 import Services.Interfaces.IIBANService;
 import Services.Interfaces.ILoanService;
 import Services.Interfaces.IUserService;
-import Services.LoanService;
-import Services.UserServices;
 
 public class DataLoader {
 
     private final IUserService userServices;
     private final IIBANService ibanService;
     private final ILoanService loanService;
+    private final ICardService cardService;
 
     public DataLoader(IUserService userServices,
                       IIBANService ibanService,
-                      ILoanService loanService) {
+                      ILoanService loanService,
+                      ICardService cardService) {
 
         this.userServices = userServices;
         this.ibanService = ibanService;
         this.loanService = loanService;
+        this.cardService = cardService;
     }
 
-    public String Loader(){
+    public void Loader(){
 //        isInitialLoad();
+        // try catch for loading problem
         userServices.LoadUsers();
         ibanService.LoadIBANs();
         loanService.LoadLoans();
+        cardService.LoadCards();
 
-        return "Data load successfully!";
+        System.out.println("Data load successfully!");
     }
 }

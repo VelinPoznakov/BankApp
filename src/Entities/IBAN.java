@@ -17,6 +17,10 @@ public class IBAN implements Serializable{
     }
 
 
+    public String IBANDetails(){
+        return IBANName + " " + balance;
+    }
+
     public double getBalance() {
         return balance;
     }

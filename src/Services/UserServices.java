@@ -1,6 +1,6 @@
 package Services;
+import Entities.Users.Admin;
 import Exceptions.UserNotFoundException;
-import Entities.Users.Customer;
 import Entities.Users.User;
 import java.io.*;
 import java.nio.file.Files;
@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import ProgramInterface.Interfaces.IUserInterface;
 import Services.Interfaces.IUserService;
 import Validations.Validations;
 
@@ -18,6 +17,7 @@ public class UserServices implements IUserService {
     public static Path file = Path.of("files", FILENAME);
     public static List<User> users;
 
+    @Override
     public List<User> LoadUsers(){
 
         if(!Validations.validateFile(FILENAME)){
@@ -46,6 +46,7 @@ public class UserServices implements IUserService {
         }
     }
 
+    @Override
     public void CreateUserInFile(){
 
         try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file.toFile()))){
@@ -57,17 +58,20 @@ public class UserServices implements IUserService {
         users = LoadUsers();
     }
 
+    @Override
     public List<User> GetCustomerOnly(){
         List<User> customers = new ArrayList<>();
 
         for(User user: users){
-            if(user instanceof Customer){
-                users.add(user);
+            if(user instanceof Admin){
+                continue;
             }
+            customers.add(user);
         }
         return customers;
     }
 
+    @Override
     public User GetUser(int userId){
         for(User user: users){
             if(user.getId() == userId){

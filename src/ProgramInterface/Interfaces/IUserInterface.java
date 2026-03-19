@@ -5,4 +5,5 @@ import Entities.Users.User;
 public interface IUserInterface {
     User Register();
     User Login();
+    User UserLoginOrRegisterMenu(IUserInterface userInterface, IIBANInterface ibanInterface);
 }

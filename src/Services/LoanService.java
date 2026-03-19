@@ -17,6 +17,7 @@ public class LoanService implements ILoanService {
     public static Path file = Path.of("files", FILENAME);
     public static List<Loan> loans;
 
+    @Override
     public List<Loan> LoadLoans()
     {
         if(!Validations.validateFile(FILENAME)){
@@ -45,6 +46,7 @@ public class LoanService implements ILoanService {
         }
     }
 
+    @Override
     public void CreateLoanInFile(){
 
         try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file.toFile()))){
@@ -60,7 +62,7 @@ public class LoanService implements ILoanService {
         List<Loan> studentLoans = new ArrayList<>();
 
         for(Loan loan: loans){
-            if(loan.loanType == LoanType.STUDENT){
+            if(loan.loanType == LoanType.STUDENT && !loan.isLoanPaid){
                 studentLoans.add(loan);
             }
         }
@@ -68,11 +70,12 @@ public class LoanService implements ILoanService {
         return studentLoans;
     }
 
+    @Override
     public List<Loan> AdultLoans(){
         List<Loan> adultLoan = new ArrayList<>();
 
         for(Loan loan: loans){
-            if(loan.loanType == LoanType.ADULT){
+            if(loan.loanType == LoanType.ADULT  && !loan.isLoanPaid){
                 adultLoan.add(loan);
             }
         }
@@ -80,15 +83,18 @@ public class LoanService implements ILoanService {
         return adultLoan;
     }
 
+    @Override
     public List<Loan> GetLoansByUserId(int userId){
         List<Loan> userLoans = new ArrayList<>();
 
         for(Loan loan: loans){
-            if(loan.userId == userId){
+            if(loan.userId == userId && !loan.isLoanPaid){
                 userLoans.add(loan);
             }
         }
 
         return userLoans;
     }
+
+
 }

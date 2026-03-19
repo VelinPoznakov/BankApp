@@ -4,16 +4,17 @@ import Entities.Users.Enums.UserRoles;
 
 public class Admin extends User {
 
-    public UserRoles role = UserRoles.ADMIN;
-
-    public Admin(int id, String username, String password, String birthDate) {
-        super(id, username, password, birthDate);
+    public Admin(int id, String username, String password, String birthDate, double monthlyIncome) {
+        super(id, username, password, birthDate, monthlyIncome, UserRoles.ADMIN, "adult");
     }
 
-//    @Override
-//    public String getUserDetails() {
-//        return "Admin " + username + "\n" +
-//                "Birth Date : " + birthDate + "\n" +
-//                "Created At : " + createdAt + "\n";
-//    }
+    @Override
+    public String GetUserDetails() {
+        return "Admin " + username + "\n"
+                + "Birth Date : " + birthDate + "\n"
+                + "Monthly Income " + getMonthlyIncome() + "\n"
+                + "Created At : " + createdAt + "\n";
+    }
 }
+
+

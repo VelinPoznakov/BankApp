@@ -1,0 +1,88 @@
+package Entities;
+
+import java.io.Serializable;
+
+public class Card implements Serializable {
+
+    private int id;
+    private long cardNumber;
+    private int cvvCode;
+    private String expirationDate;
+    public CardProvider cardProvider;
+    public boolean isCardActive = true;
+    private int userId;
+    private String IBANName;
+
+    public Card(int id,
+                long cardNumber,
+                int cvvCode,
+                String expirationDate,
+                CardProvider cardProvider,
+                int userId,
+                String IBANName) {
+
+        setId(id);
+        setCardNumber(cardNumber);
+        setCvvCode(cvvCode);
+        setExpirationDate(expirationDate);
+        this.cardProvider = cardProvider;
+        setUserId(userId);
+        setIBANName(IBANName);
+
+    }
+
+    public String CardDetails(){
+        return "Card Number " + getCardNumber() + "\n"
+                + "CVV Code " + getCvvCode() + "\n"
+                + "Expiration Date " + getExpirationDate() + "\n"
+                + "Card Provider " + cardProvider.toString() + "\n";
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public long getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(long cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public int getCvvCode() {
+        return cvvCode;
+    }
+
+    public void setCvvCode(int cvvCode) {
+        this.cvvCode = cvvCode;
+    }
+
+    public String getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(String expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getIBANName() {
+        return IBANName;
+    }
+
+    public void setIBANName(String IBANName) {
+        this.IBANName = IBANName;
+    }
+}

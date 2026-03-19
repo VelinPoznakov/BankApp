@@ -1,16 +1,16 @@
 package ProgramInterface;
 
 import Entities.IBAN;
+import Entities.Users.User;
+import Exceptions.CommandException;
 import Exceptions.ImpossibleLoanAmountException;
 import Entities.Loans.AdultLoan;
 import Entities.Loans.Loan;
 import Entities.Loans.StudentLoan;
 import ProgramInterface.Interfaces.ILoanInterface;
-import Services.IBANService;
 import Services.Interfaces.IIBANService;
 import Services.Interfaces.ILoanService;
 import Services.LoanService;
-import Entities.Users.Customer;
 import Entities.Users.Enums.CustomerType;
 import Validations.Validations;
 
@@ -30,119 +30,106 @@ public class LoanInterface implements ILoanInterface {
     }
 
     @Override
-    public void TakeLoan(Customer customer) {
-        IBAN customerIBAN = ibanService.IBANForUser(customer.getId());
+    public void TakeLoan(User user) {
 
-        double interest;
+        IBAN customerIBAN = ibanService.IBANForUser(user.getId());
         Scanner sc = new Scanner(System.in);
 
-        if(customer.getCustomerType() == CustomerType.STUDENT) {
-            System.out.println("*You can take only Student loans");
-            interest = 0.3;
-        }else{
-            System.out.println("*You can take only Adult loans");
-            interest = 0.5;
-        }
+        double interest = (user.getCustomerType() == CustomerType.STUDENT) ? 0.03 : 0.05;
 
-        System.out.println("Enter the loan amount you want to take: ");
-        double loanAmount = sc.nextDouble();
+        System.out.println("Enter loan amount:");
+        String loanAmountStr = sc.nextLine();
 
-        System.out.println("For How many years you want to take it: ");
-        int years = sc.nextInt();
+        if(Validations.CommandCheck(loanAmountStr) == null) return;
 
-        System.out.println("Enter name for your loan to be references with: ");
+        double loanAmount = Double.parseDouble(loanAmountStr);
+
+        System.out.println("Enter years to repay:");
+        String yearsStr = sc.nextLine();
+
+        if(Validations.CommandCheck(yearsStr) == null) return;
+
+        int years = Integer.parseInt(yearsStr);
+
+        System.out.println("Enter loan name:");
         String name = sc.nextLine();
-        sc.nextLine();
 
-        double anualPayment = customer.getMonthlyIncome() * 0.3;
+        if(Validations.CommandCheck(name) == null) return;
 
-        if(loanAmount + (loanAmount * interest ) > (anualPayment) * years){
-            throw new ImpossibleLoanAmountException("The loan amount is too high");
+        double monthlyPaymentLimit = user.getMonthlyIncome() * 0.3;
+
+        double totalAmount = loanAmount * (1 + interest * years);
+        double monthlyPayment = totalAmount / (years * 12);
+
+        if (monthlyPayment > monthlyPaymentLimit) {
+            throw new ImpossibleLoanAmountException("Loan is not affordable.");
         }
 
         int takenYear = LocalDate.now().getYear();
-        int dueYear = Math.toIntExact(Math.round(loanAmount / customer.getMonthlyIncome()));
+        int dueYear = takenYear + years;
         int id = LoanService.loans.size() + 1;
 
-        Loan loan;
-        if(customer.getCustomerType() == CustomerType.STUDENT) {
-            loan = new StudentLoan(
-                    id,
-                    name,
-                    loanAmount,
-                    anualPayment,
-                    dueYear,
-                    takenYear,
-                    customer.getId()
-            );
+        Loan loan = (user.getCustomerType() == CustomerType.STUDENT)
+                ? new StudentLoan(id, name, loanAmount, monthlyPayment, dueYear, takenYear, user.getId())
+                : new AdultLoan(id, name, loanAmount, monthlyPayment, dueYear, takenYear, user.getId());
 
-        }else{
-            loan = new AdultLoan(
-                    id,
-                    name,
-                    loanAmount,
-                    anualPayment,
-                    dueYear,
-                    takenYear,
-                    customer.getId()
-            );
-
-        }
         LoanService.loans.add(loan);
         loanService.CreateLoanInFile();
+
         customerIBAN.setBalance(customerIBAN.getBalance() + loanAmount);
         ibanService.CreateIBANsInFile();
 
-        System.out.println("The loan has been taken successfully");
-
+        System.out.println("Loan approved successfully");
     }
 
     @Override
-    public void PayLoan(String loanName, Customer customer) {
-        IBAN customerIBAN = ibanService.IBANForUser(customer.getId());
-        boolean fullPayment = false;
+    public void PayLoan(String loanName, User user) {
 
+        IBAN userIban = ibanService.IBANForUser(user.getId());
         Scanner sc = new Scanner(System.in);
 
-        for(Loan loan: loanService.GetLoansByUserId(customer.getId())){
-            if(loan.loanName.equals(loanName)){
+        for (Loan loan : loanService.GetLoansByUserId(user.getId())) {
 
-                if(!Validations.ValidatePayment(loan.anualPayment, customerIBAN.getBalance())){
-                    System.out.println("Low Balance deposit money to pay it");
+            if (loan.loanName.equals(loanName)) {
+
+                double totalAmount = loan.getTotalAmount();
+                double remaining = totalAmount - loan.getReturnedMoney();
+
+                double paymentAmount = Math.min(loan.anualPayment, remaining);
+
+                if (!Validations.ValidatePayment(paymentAmount, userIban.getBalance())) {
+                    System.out.println("Low balance. Deposit money.");
                     return;
                 }
 
-                double paymentAmount;
-                if(loan.anualPayment > (loan.getAmount() * loan.interest) - loan.getReturnedMoney()){
-                    paymentAmount = (loan.getAmount() * loan.interest) - loan.getReturnedMoney();
-                    fullPayment = true;
-                }else{
-                    paymentAmount = loan.anualPayment;
-                }
+                System.out.println("Payment amount: " + paymentAmount);
 
-                System.out.println("Your loan payment is " + paymentAmount);
-                System.out.println("Do you want to pay it");
+                while (true) {
+                    System.out.println("Do you want to pay? (y/n)");
+                    String answer = sc.nextLine();
 
-                while (true){
-                    String answear = sc.nextLine();
-                    sc.nextLine();
+                    if(Validations.CommandCheck(answer) == null) return;
 
-                    if(answear.equals("yes")){
+                    if (answer.equalsIgnoreCase("y")) {
 
-                        if(fullPayment){
-                            PayFullLoan(loanName, customer);
-                            return;
+                        userIban.setBalance(userIban.getBalance() - paymentAmount);
+                        loan.setReturnedMoney(loan.getReturnedMoney() + paymentAmount);
+
+                        if (loan.getReturnedMoney() >= totalAmount) {
+                            loan.isLoanPaid = true;
+                            System.out.println("Loan fully paid.");
+                        } else {
+                            System.out.println("Remaining: " + (totalAmount - loan.getReturnedMoney()));
                         }
 
-                        customerIBAN.setBalance(customerIBAN.getBalance() - loan.anualPayment);
-                        loan.setReturnedMoney(loan.getReturnedMoney() + loan.anualPayment);
+                        loanService.CreateLoanInFile();
+                        ibanService.CreateIBANsInFile();
+                        return;
 
-                        System.out.println("You paid " + loan.anualPayment + " and you have left to pay " + ((loan.getAmount() * loan.interest) - loan.getReturnedMoney()));
+                    } else if (answer.equalsIgnoreCase("n")) {
                         return;
-                    }else if(answear.equals("no")){
-                        return;
-                    }else {
-                        System.out.println("Wrong answer please try again");
+                    } else {
+                        System.out.println("Wrong answer, try again");
                     }
                 }
             }
@@ -150,29 +137,124 @@ public class LoanInterface implements ILoanInterface {
     }
 
     @Override
-    public void PayFullLoan(String loanName, Customer customer) {
-        IBAN customerIBAN = ibanService.IBANForUser(customer.getId());
+    public void PayFullLoan(String loanName, User user) {
 
-        for(Loan loan: LoanService.loans){
-            if(loan.loanName.equals(loanName)){
-                double amount = (loan.getAmount() * loan.interest) - loan.getReturnedMoney();
+        IBAN customerIBAN = ibanService.IBANForUser(user.getId());
 
-                if(!Validations.ValidatePayment(amount, customerIBAN.getBalance())){
-                    System.out.println("Low Balance deposit money to pay it");
+        for (Loan loan : loanService.GetLoansByUserId(user.getId())) {
+
+            if (loan.loanName.equals(loanName)) {
+
+                double totalAmount = loan.getTotalAmount();
+                double remaining = totalAmount - loan.getReturnedMoney();
+
+                if (!Validations.ValidatePayment(remaining, customerIBAN.getBalance())) {
+                    System.out.println("Low balance.");
+                    return;
                 }
 
-                customerIBAN.setBalance(customerIBAN.getBalance() + amount);
-                loan.setReturnedMoney(loan.getReturnedMoney() + amount);
+                customerIBAN.setBalance(customerIBAN.getBalance() - remaining);
+                loan.setReturnedMoney(totalAmount);
+                loan.isLoanPaid = true;
 
-                System.out.println("You paid " + amount);
-                System.out.println("Your loan is paid");
+                loanService.CreateLoanInFile();
+                ibanService.CreateIBANsInFile();
+
+                System.out.println("Loan fully paid: " + remaining);
+                return;
             }
         }
-
     }
 
     @Override
-    public List<Loan> MyLoans(Customer customer) {
-        return loanService.GetLoansByUserId(customer.getCustomerId());
+    public List<Loan> MyLoans(User user) {
+        return loanService.GetLoansByUserId(user.getId());
+    }
+
+    @Override
+    public void LoanMenu(User user){
+        Scanner sc = new Scanner(System.in);
+        String loanName;
+
+        List<Loan> userLoans = MyLoans(user);
+        StringBuilder loans =  new StringBuilder("Loans: ");
+
+        while (true){
+
+            try{
+                if(userLoans.isEmpty()){
+                    System.out.println("Select section: Take Loan(tl)");
+                    System.out.println("You have no loans");
+
+                    String command = sc.nextLine();
+
+                    switch (command){
+                        case "e":
+                            return;
+                        case "tl":
+                            TakeLoan(user);
+                            return;
+                        default:
+                            throw new CommandException("Invalid command");
+                    }
+
+
+                }else {
+                    for (Loan loan : userLoans) {
+                        loans.append(loan.loanName).append(" ");
+                    }
+
+                    System.out.println(loans);
+
+                    System.out.println("Select section: Take Loan(tl), Pay Loan(pl), Pay Full Loan(pfl), Loan Details(d)");
+
+                    String command = sc.nextLine();
+
+                    switch (command) {
+                        case "e":
+                            return;
+                        case "tl":
+                            TakeLoan(user);
+                            return;
+                        case "pl":
+                            System.out.println("Enter loan name");
+                            loanName = sc.nextLine();
+
+                            if(Validations.CommandCheck(loanName) == null) break;
+
+                            PayLoan(loanName, user);
+                            return;
+                        case "pfl":
+                            System.out.println("Enter loan name");
+                            loanName = sc.nextLine();
+
+                            if(Validations.CommandCheck(loanName) == null) break;
+
+                            PayFullLoan(loanName, user);
+                            return;
+                        case "d":
+                            System.out.println("Enter loan name");
+                            loanName = sc.nextLine();
+
+                            if (Validations.CommandCheck(loanName) == null) break;
+
+                            for (Loan loan : userLoans) {
+                                if (loan.loanName.equals(loanName)) {
+                                    System.out.println(loan.LoanDetails());
+                                    return;
+                                }
+                            }
+                            System.out.println("Wrong loan name please try again");
+                            continue;
+                        default:
+                            throw new CommandException("Invalid command");
+                    }
+                }
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+
+        }
+
     }
 }

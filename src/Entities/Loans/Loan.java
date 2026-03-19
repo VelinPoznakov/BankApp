@@ -37,9 +37,12 @@ public abstract class Loan implements Serializable {
         this.userId = userId;
     }
 
-    public abstract String MoneyLeftToReturn();
-    public abstract String YearsLeft();
     public abstract String LoanDetails();
+
+    public double getTotalAmount() {
+        int years = dueYear - takenYear;
+        return amount + (amount * interest * years);
+    }
 
     public double getAmount() {
         return amount;
